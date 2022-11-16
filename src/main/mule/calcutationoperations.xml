@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="d304a129-b6f1-4337-b703-e0231b045e8c" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="calcutationoperationsFlow" doc:id="1794ff3a-fd27-4800-8121-7419ec276a86" >
+		<http:listener doc:name="Listener" doc:id="982448f4-f3a2-409d-af20-b3b0fdb0f2fd" config-ref="HTTP_Listener_config" path="/calculation"/>
+		<set-variable value="#[payload.a ++ payload.b]" doc:name="Set Variable" doc:id="d8b65cab-5f1f-4de8-889f-0f45add0f2f2" variableName="sum"/>
+		<ee:transform doc:name="Transform Message" doc:id="c5632cf7-9478-4298-b6b9-1277753d78fd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"sum": payload.a + payload.b,
+	"sub": payload.a - payload.b,
+	"division": payload.a / payload.b,
+	"mul": payload.a * payload.b
+	
+	
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
